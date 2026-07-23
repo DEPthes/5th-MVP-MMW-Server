@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: mmw
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mmw}
+    username: ${DB_USERNAME:mmw}
+    password: ${DB_PASSWORD:mmw}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
