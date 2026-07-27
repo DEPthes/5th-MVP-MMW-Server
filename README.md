@@ -68,3 +68,84 @@ com.wvw.mmw
 - **GitHub Flow**: `main` + `feature/*`
 - 작업은 `feature/*` 브랜치에서 → PR → 리뷰 후 `main` 병합
 - `main` 직접 push 금지 (브랜치 보호 규칙 권장)
+
+
+
+## 외부 API 키 설정 안내 ( TTS / STT )
+
+### 환경 변수
+
+| Key              | 설명 | 발급처 |
+|------------------|---|---|
+| `GEMINI_API_KEY` | Gemini API 키 | Google AI Studio |
+| `GCP_API_KEY`    | STT/TTS 공용 키 | GCP  |
+
+
+### 1. IntelliJ에 환경 변수 등록
+
+1. 상단 실행 설정 드롭다운 → `Edit Configurations...`
+2. 해당 Application 설정 선택
+3. `Environment variables` 항목 (안 보이면 `Modify options` → `Environment variables`)
+4. 우측 아이콘 클릭 후 추가
+
+```
+GEMINI_API_KEY=발급받은_키
+GCP_API_KEY=발급받은_키
+```
+해당 키 디스코드에 올려놨습니다.
+
+5. `Apply` → `OK`
+
+> 환경 변수가 없으면 실행 시 `Could not resolve placeholder 'GEMINI_API_KEY'` 오류 발생
+
+### 2. 연결 확인
+
+앱 실행 후 브라우저에서 접속
+
+```
+http://localhost:8080/gemini/test
+```
+
+Gemini 응답 텍스트가 표시되면 정상! 질문을 바꾸려면 `?prompt=질문내용`을 붙이면 됨.
+
+STT/TTS는 아직 코드로 연결되지 않았으며, 터미널에서 확인할 수 있습니다(코드 완성 시 내용 바로 수정하겠습니다)
+
+```bash
+# TTS
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"input":{"text":"테스트"},"voice":{"languageCode":"ko-KR","ssmlGender":"FEMALE"},"audioConfig":{"audioEncoding":"MP3"}}' \
+  "https://texttospeech.googleapis.com/v1/text:synthesize?key=발급받은_키"
+```
+
+`audioContent`에 base64 문자열이 오면 정상
+
+---
+
+## 참고 사항
+
+### Gemini 모델
+
+`application.yaml`의 `gemini.model`은 **`gemini-flash-latest`** 를 사용
+
+| 모델 | 결과 |
+|---|---|
+| `gemini-2.0-flash` | `429` — 무료 할당량 0 |
+| `gemini-2.5-flash` | `404` — 신규 사용자 사용 불가 |
+| `gemini-flash-latest` | 정상 |
+
+사용 가능한 모델 목록은 아래로 조회할 수 있습니다.
+
+```bash
+curl "https://generativelanguage.googleapis.com/v1beta/models?key=발급받은_키"
+```
+
+### STT 오디오 형식
+
+`LINEAR16` / `16000Hz` 조합에서 정상 동작을 확인했습니다. 요청 시 `config`에 파일의 실제 형식을 정확히 명시해야 합니다.
+
+한국어 인식 시 **고유명사 정확도가 낮다** (테스트 시 "김우성" → "김무성", confidence 0.63)
+
+### 주의
+
+
+- 로컬 실행 시 **Docker Desktop이 실행 중**이어야 작동합니다.
