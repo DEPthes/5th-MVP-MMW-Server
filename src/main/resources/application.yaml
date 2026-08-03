@@ -19,3 +19,8 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+
+gemini:
+  api-key: ${GEMINI_API_KEY}
+  model: gemini-flash-latest
+  base-url: https://generativelanguage.googleapis.com
