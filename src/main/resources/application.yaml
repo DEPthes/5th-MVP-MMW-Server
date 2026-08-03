@@ -24,3 +24,11 @@ gemini:
   api-key: ${GEMINI_API_KEY}
   model: gemini-flash-latest
   base-url: https://generativelanguage.googleapis.com
+
+stt:
+  language-code: ko-KR
+  model: latest_long
+  sample-rate-hertz: 16000
+
+gcs:
+  bucket-name: ${GCS_BUCKET_NAME:mmw-audio-test-000000}
