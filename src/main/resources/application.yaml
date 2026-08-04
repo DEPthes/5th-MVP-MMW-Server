@@ -30,5 +30,10 @@ stt:
   model: latest_long
   sample-rate-hertz: 16000
 
+tts:
+  language-code: ko-KR
+  voice-gender: FEMALE
+  speaking-rate: 1.0
+
 gcs:
   bucket-name: ${GCS_BUCKET_NAME:mmw-audio-test-000000}

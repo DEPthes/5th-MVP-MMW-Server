@@ -30,14 +30,14 @@ public class GcsClient {
      * @return gs:// 로 시작하는 URI. STT 요청에 그대로 사용.
      */
     public String upload(String objectName, byte[] content, String contentType) {
-        BlobId blobId = BlobId.of(bucketName, objectName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+        BlobId blobId = BlobId.of(bucketName, objectName); //주소(어느 버킷의 어느 경로인지)
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId) //BlobID에 메타정보를 붙인 것.
                 .setContentType(contentType)
                 .build();
 
         storage.create(blobInfo, content);
 
-        return "gs://" + bucketName + "/" + objectName;
+        return "gs://" + bucketName + "/" + objectName; //STT가 요구하는 형식:gs://
     }
 
     /**
