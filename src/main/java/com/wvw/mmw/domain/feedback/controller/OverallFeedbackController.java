@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class InterviewCompleteController {
+public class OverallFeedbackController {
 
     private final OverallFeedbackGenerateService overallFeedbackGenerateService;
     private final GeminiClient geminiClient;

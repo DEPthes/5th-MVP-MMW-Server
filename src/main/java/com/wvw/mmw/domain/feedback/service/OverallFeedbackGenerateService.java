@@ -2,7 +2,9 @@ package com.wvw.mmw.domain.feedback.service;
 
 import com.wvw.mmw.domain.feedback.ai.GeminiFeedbackProcessor;
 import com.wvw.mmw.domain.feedback.dto.OverallFeedbackResponse;
+import com.wvw.mmw.domain.feedback.entity.FeedbackPoint;
 import com.wvw.mmw.domain.feedback.entity.OverallFeedback;
+import com.wvw.mmw.domain.feedback.repository.FeedbackPointRepository;
 import com.wvw.mmw.domain.feedback.repository.OverallFeedbackRepository;
 import com.wvw.mmw.domain.interview.entity.InterviewSession;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
@@ -10,6 +12,8 @@ import com.wvw.mmw.domain.interview.repository.InterviewSessionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 //종합 피드백 생성
 @Service
@@ -19,6 +23,7 @@ public class OverallFeedbackGenerateService {
     private final InterviewSessionRepository interviewSessionRepository;
     private final GeminiFeedbackProcessor geminiFeedbackProcessor;
     private final OverallFeedbackRepository overallFeedbackRepository;
+    private final FeedbackPointRepository feedbackPointRepository;
 
     @Transactional
     public OverallFeedbackResponse generateOverallFeedback(Long sessionId){
@@ -44,6 +49,20 @@ public class OverallFeedbackGenerateService {
 
         overallFeedbackRepository.save(overallFeedback);
 
+        if (result.feedbackPoints() != null && !result.feedbackPoints().isEmpty()){
+            List<FeedbackPoint> feedbackPointList = result.feedbackPoints()
+                    .stream().map(dto->
+                            FeedbackPoint.builder()
+                                    .overallFeedback(overallFeedback)
+                                    .type(dto.type())
+                                    .title(dto.title())
+                                    .description(dto.description())
+                                    .sequence(dto.sequence())
+                                    .build()
+                    ).toList();
+
+            feedbackPointRepository.saveAll(feedbackPointList);
+        }
         return new OverallFeedbackResponse(
                 overallFeedback.getTotalScore(),
                 overallFeedback.getOverallSummary(),
@@ -54,7 +73,8 @@ public class OverallFeedbackGenerateService {
                 overallFeedback.getAdaptabilityScore(),
                 overallFeedback.getFitExperienceScore(),
                 overallFeedback.getFitJobUnderstandingScore(),
-                overallFeedback.getFitOrganizationScore()
+                overallFeedback.getFitOrganizationScore(),
+                result.feedbackPoints()
         );
 
     }
