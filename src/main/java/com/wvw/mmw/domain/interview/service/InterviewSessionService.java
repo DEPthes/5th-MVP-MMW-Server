@@ -1,6 +1,6 @@
 package com.wvw.mmw.domain.interview.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.wvw.mmw.domain.interview.dto.CreateInterviewSessionRequest;
 import com.wvw.mmw.domain.interview.dto.InterviewSessionStartResponse;
 import com.wvw.mmw.domain.interview.entity.InterviewQuestion;

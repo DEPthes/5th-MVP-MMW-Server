@@ -25,6 +25,8 @@ public enum ErrorCode {
     // user
 
     // interview
+    SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "면접 세션을 찾을 수 없습니다."),
+    QUESTION_GENERATION_FAILED(HttpStatus.BAD_GATEWAY, "면접 질문 생성에 실패했습니다."),
 
     // feedback
     ;
