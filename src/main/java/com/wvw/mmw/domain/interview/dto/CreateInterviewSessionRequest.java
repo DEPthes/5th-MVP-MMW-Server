@@ -1,23 +1,16 @@
 package com.wvw.mmw.domain.interview.dto;
 
-import com.wvw.mmw.domain.profile.entity.CareerLevel;
 import com.wvw.mmw.domain.interview.entity.InterviewType;
 
 /**
  * 면접 세션 생성 요청.
  *
- * @param applicationProfileId 지원 프로필 ID (없으면 null)
- * @param companyName          지원 기업
- * @param jobPosition          지원 직무
- * @param careerLevel          경력 구분
+ * @param applicationProfileId 지원 프로필 ID. 기업·직무·경력 정보를 여기서 조회한다.
  * @param interviewType        면접 유형
- * @param durationMinutes      면접 시간(분)
+ * @param durationMinutes      면접 시간(분). 5, 10, 15, 20 중 하나.
  */
 public record CreateInterviewSessionRequest(
         Long applicationProfileId,
-        String companyName,
-        String jobPosition,
-        CareerLevel careerLevel,
         InterviewType interviewType,
         int durationMinutes
 ) {
