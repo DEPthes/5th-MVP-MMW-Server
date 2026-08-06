@@ -2,6 +2,7 @@ package com.wvw.mmw.domain.interview.service;
 
 import com.wvw.mmw.domain.interview.dto.CreateInterviewSessionRequest;
 import com.wvw.mmw.domain.interview.dto.InterviewSessionStartResponse;
+import com.wvw.mmw.domain.interview.dto.InterviewSessionSummaryResponse;
 import com.wvw.mmw.domain.interview.entity.InterviewQuestion;
 import com.wvw.mmw.domain.interview.entity.InterviewSession;
 import com.wvw.mmw.domain.interview.entity.SessionStatus;
@@ -25,8 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * 면접 세션 생성을 담당한다.
- * 지원 프로필을 조회해 Gemini로 질문 세트를 만들고, 세션과 함께 저장한다.
+ * 면접 세션의 생성·조회·삭제를 담당한다.
  */
 @Slf4j
 @Service
@@ -57,6 +57,37 @@ public class InterviewSessionService {
         List<InterviewQuestion> questions = saveQuestions(session, contents);
 
         return InterviewSessionStartResponse.of(session, questions);
+    }
+
+    /**
+     * 사용자의 면접 기록 목록을 최신순으로 조회한다.
+     *
+     * @param userId 요청한 사용자 ID
+     * @param status 필터. null이면 전체를 조회한다.
+     */
+    @Transactional(readOnly = true)
+    public List<InterviewSessionSummaryResponse> findAll(Long userId, SessionStatus status) {
+        List<InterviewSession> sessions = (status == null)
+                ? sessionRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                : sessionRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status);
+
+        return sessions.stream()
+                .map(InterviewSessionSummaryResponse::from)
+                .toList();
+    }
+
+    /**
+     * 면접 기록을 삭제한다. 연관된 질문·답변·피드백도 함께 삭제된다.
+     *
+     * @param userId    요청한 사용자 ID
+     * @param sessionId 삭제할 세션 ID
+     */
+    @Transactional
+    public void delete(Long userId, Long sessionId) {
+        InterviewSession session = sessionRepository.findByIdAndUserId(sessionId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SESSION_NOT_FOUND));
+
+        sessionRepository.delete(session);
     }
 
     // 본인 소유의 지원 프로필을 조회.
