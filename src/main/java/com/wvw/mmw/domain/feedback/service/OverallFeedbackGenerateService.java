@@ -7,6 +7,7 @@ import com.wvw.mmw.domain.feedback.entity.OverallFeedback;
 import com.wvw.mmw.domain.feedback.repository.FeedbackPointRepository;
 import com.wvw.mmw.domain.feedback.repository.OverallFeedbackRepository;
 import com.wvw.mmw.domain.interview.entity.InterviewSession;
+import com.wvw.mmw.domain.interview.entity.SessionStatus;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewSessionRepository;
 import com.wvw.mmw.global.exception.BusinessException;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//종합 피드백 생성
+//면접 종료 및 종합 피드백 생성
 @Service
 @RequiredArgsConstructor
 public class OverallFeedbackGenerateService {
@@ -27,11 +28,28 @@ public class OverallFeedbackGenerateService {
     private final OverallFeedbackRepository overallFeedbackRepository;
     private final FeedbackPointRepository feedbackPointRepository;
 
+
+    @Transactional
+    public void completeSession(Long sessionId){
+        InterviewSession session = interviewSessionRepository.findById(sessionId)
+                .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
+
+        if(session.getStatus()== SessionStatus.COMPLETED){
+            throw new BusinessException(ErrorCode.INTERVIEW_ALREADY_COMPLETED);
+        }
+
+//        session status completed로 변경
+    }
+
     @Transactional
     public OverallFeedbackResponse generateOverallFeedback(Long sessionId){
 
         InterviewSession session = interviewSessionRepository.findById(sessionId)
                 .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
+
+        if(session.getStatus()!= SessionStatus.COMPLETED){
+            throw new BusinessException(ErrorCode.INTERVIEW_NOT_COMPLETED);
+        }
 
         if(overallFeedbackRepository.findByInterviewSessionId(sessionId).isPresent()){
             throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);

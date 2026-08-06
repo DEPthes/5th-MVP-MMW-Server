@@ -33,7 +33,9 @@ public enum ErrorCode {
     OVERALL_FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND, "생성되지 않은 종합피드백"),
     FEEDBACK_ALREADY_EXIST(HttpStatus.CONFLICT,"이지 존재하는 피드백"),
     AI_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI 서버 통신 실패"),
-    AI_OVERALL_FEEDBACK_PARSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI 종합 피드백 파싱 중 오류 발생")
+    AI_OVERALL_FEEDBACK_PARSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI 종합 피드백 파싱 중 오류 발생"),
+    INTERVIEW_NOT_COMPLETED(HttpStatus.BAD_REQUEST,"면접이 종료되지 않음"),
+    INTERVIEW_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST,"이미 종료된 면접 세션"),
 
 
 
