@@ -34,11 +34,11 @@ public class OverallFeedbackGenerateService {
         InterviewSession session = interviewSessionRepository.findById(sessionId)
                 .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
 
-        if(session.getStatus()== SessionStatus.COMPLETED){
+        if(session.getStatus()== SessionStatus.COMPLETED||session.getStatus()==SessionStatus.ANALYZING){
             throw new BusinessException(ErrorCode.INTERVIEW_ALREADY_COMPLETED);
         }
 
-//        session status completed로 변경
+        session.endInterview();
     }
 
     @Transactional
@@ -47,9 +47,13 @@ public class OverallFeedbackGenerateService {
         InterviewSession session = interviewSessionRepository.findById(sessionId)
                 .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
 
-        if(session.getStatus()!= SessionStatus.COMPLETED){
+        if(session.getStatus()== SessionStatus.COMPLETED){
+            throw new BusinessException(ErrorCode.INTERVIEW_ALREADY_COMPLETED);
+        }
+        else if(session.getStatus()!= SessionStatus.ANALYZING){
             throw new BusinessException(ErrorCode.INTERVIEW_NOT_COMPLETED);
         }
+
 
         if(overallFeedbackRepository.findByInterviewSessionId(sessionId).isPresent()){
             throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);
@@ -87,6 +91,8 @@ public class OverallFeedbackGenerateService {
 
             feedbackPointRepository.saveAll(feedbackPointList);
         }
+
+        session.completeAnalysis();
         return new OverallFeedbackResponse(
                 overallFeedback.getTotalScore(),
                 overallFeedback.getOverallSummary(),

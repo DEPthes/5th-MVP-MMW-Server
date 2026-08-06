@@ -6,6 +6,7 @@ import com.wvw.mmw.domain.feedback.entity.FeedbackPointType;
 import java.util.List;
 
 // api url에 sessionId존재
+//종합피드백 반환값
 public record OverallFeedbackResponse (
         int totalScore,
         String overallSummary,

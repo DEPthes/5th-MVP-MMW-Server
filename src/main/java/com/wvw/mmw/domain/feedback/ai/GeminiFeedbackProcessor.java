@@ -30,7 +30,7 @@ public class GeminiFeedbackProcessor {
     private final AnswerRepository answerRepository;
     private final InterviewQuestionRepository interviewQuestionRepository;
 
-
+//  질문에 대한 대답 피드백 요청
     public QuestionFeedbackResponse requestFeedback(String question, String answer){
 //      프롬포트
         String prompt = String.format(
@@ -66,6 +66,8 @@ public class GeminiFeedbackProcessor {
         }
 
     }
+
+//  종합피드백 요청
     public OverallFeedbackResponse requestOverallFeedback(Long sessionId){
         List<InterviewQuestion> questionList = interviewQuestionRepository.findByInterviewSessionIdOrderBySequenceAsc(sessionId);
 //      StringBuffer로 질문,대답 정리
