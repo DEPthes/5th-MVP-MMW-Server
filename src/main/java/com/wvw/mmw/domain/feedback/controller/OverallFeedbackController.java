@@ -19,7 +19,7 @@ public class OverallFeedbackController {
     private final InterviewDetailService interviewDetailService;
 
     //  면접 종료
-    @PostMapping("\"/api/v1/interviews/{sessionId}/complete\"")
+    @PostMapping("/api/v1/interviews/{sessionId}/complete")
     public ResponseEntity<Void> completeInterView(@PathVariable Long sessionId){
         overallFeedbackGenerateService.completeSession(sessionId);
         return ResponseEntity.ok().build();
