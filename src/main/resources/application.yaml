@@ -37,3 +37,7 @@ tts:
 
 gcs:
   bucket-name: ${GCS_BUCKET_NAME:mmw-audio-test-000000}
+
+gcp:
+  credentials-path: ${GCP_CREDENTIALS_PATH:gcp-key.json}
+  project-id: mmw-project-000000

@@ -22,12 +22,12 @@ public class GcsTestController {
 
         String gcsUri = gcsClient.upload(objectName, content.getBytes(), "text/plain");
         String extracted = gcsClient.extractObjectName(gcsUri);
-        boolean deleted = gcsClient.delete(extracted);
+        String signedUrl = gcsClient.generateSignedUrl(extracted, 10);
 
         return Map.of(
                 "gcsUri", gcsUri,
                 "extractedObjectName", extracted,
-                "deleted", String.valueOf(deleted)
+                "signedUrl", signedUrl
         );
     }
 }
