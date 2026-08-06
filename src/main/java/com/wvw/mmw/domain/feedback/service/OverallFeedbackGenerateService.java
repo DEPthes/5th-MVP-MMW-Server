@@ -9,6 +9,8 @@ import com.wvw.mmw.domain.feedback.repository.OverallFeedbackRepository;
 import com.wvw.mmw.domain.interview.entity.InterviewSession;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewSessionRepository;
+import com.wvw.mmw.global.exception.BusinessException;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,11 @@ public class OverallFeedbackGenerateService {
     public OverallFeedbackResponse generateOverallFeedback(Long sessionId){
 
         InterviewSession session = interviewSessionRepository.findById(sessionId)
-                .orElseThrow(()->new IllegalArgumentException("sessionId로 검색 불가"));
+                .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
+
+        if(overallFeedbackRepository.findByInterviewSessionId(sessionId).isPresent()){
+            throw new BusinessException(ErrorCode.FEEDBACK_ALREADY_EXIST);
+        }
 
         OverallFeedbackResponse result = geminiFeedbackProcessor.requestOverallFeedback(sessionId);
 

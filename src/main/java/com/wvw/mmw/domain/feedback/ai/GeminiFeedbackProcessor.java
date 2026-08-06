@@ -8,13 +8,17 @@ import com.wvw.mmw.domain.interview.repository.AnswerRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewSessionRepository;
 import com.wvw.mmw.gemini.GeminiClient;
+import com.wvw.mmw.global.exception.BusinessException;
+import com.wvw.mmw.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 //
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GeminiFeedbackProcessor {
@@ -42,7 +46,14 @@ public class GeminiFeedbackProcessor {
                 question, answer
         );
 //      답변 생성
-        String response = geminiClient.generate(prompt);
+        String response;
+
+        try{
+            response = geminiClient.generate(prompt);
+        }catch (Exception e){
+            log.error("Gemini 호출 실패 : {}",e.getMessage(), e);
+            throw new BusinessException(ErrorCode.AI_SERVER_ERROR);
+        }
 
 //       parsing 과정
         try{
@@ -50,8 +61,8 @@ public class GeminiFeedbackProcessor {
             return objectMapper.readValue(response, QuestionFeedbackResponse.class);
 
         }catch (Exception e){
-//            log.error("Failed Gemini Parsing, 원본 : {}",response,e);
-            throw new RuntimeException("Failed AI Feedback parsing");
+            log.error("Gemini overallFeedback response JSON parsing Failed, 원본 응답 : {}",response,e);
+            throw new BusinessException(ErrorCode.AI_OVERALL_FEEDBACK_PARSING_FAILED);
         }
 
     }
@@ -96,12 +107,21 @@ public class GeminiFeedbackProcessor {
                 sb.toString()
         );
 
-        String response = geminiClient.generate(prompt);
+        String response;
+
+        try{
+            response = geminiClient.generate(prompt);
+        }catch (Exception e){
+            log.error("Gemini 호출 실패 : {}",e.getMessage(), e);
+            throw new BusinessException(ErrorCode.AI_SERVER_ERROR);
+        }
+
 
         try{
             return objectMapper.readValue(response, OverallFeedbackResponse.class);
         }catch (Exception e){
-            throw new RuntimeException("Failed AI OverallFeedback parsing", e);
+            log.error("Gemini overallFeedback response JSON parsing Failed, 원본 응답 : {}",response,e);
+            throw new BusinessException(ErrorCode.AI_OVERALL_FEEDBACK_PARSING_FAILED);
         }
 
 

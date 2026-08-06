@@ -10,6 +10,8 @@ import com.wvw.mmw.domain.interview.entity.Answer;
 import com.wvw.mmw.domain.interview.entity.InterviewQuestion;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
 import com.wvw.mmw.domain.interview.repository.AnswerRepository;
+import com.wvw.mmw.global.exception.BusinessException;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,11 +43,11 @@ public class QuestionFeedbackGenerateService {
 
 //       질문 조회
         InterviewQuestion interviewQuestion = interviewQuestionRepository.findById(questionId)
-                .orElseThrow(()->new IllegalArgumentException("questionId 검색 불가"));
+                .orElseThrow(()->new BusinessException(ErrorCode.INTERVIEW_QUESTION_NOT_FOUND));
 
 //       답변 조회
         Answer answer = answerRepository.findByInterviewQuestionId(questionId)
-                .orElseThrow(()->new IllegalArgumentException("답변 검색 불가"));
+                .orElseThrow(()->new BusinessException(ErrorCode.ANSWER_NOT_FOUND));
 
 //      Gemini한테 질문과 대답으로 피드백 생성
         QuestionFeedbackResponse result = geminiFeedbackProcessor.requestFeedback(interviewQuestion.getContent(), answer.getTranscript());

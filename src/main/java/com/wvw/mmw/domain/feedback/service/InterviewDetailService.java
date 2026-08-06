@@ -14,6 +14,8 @@ import com.wvw.mmw.domain.interview.entity.InterviewSession;
 import com.wvw.mmw.domain.interview.repository.AnswerRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewQuestionRepository;
 import com.wvw.mmw.domain.interview.repository.InterviewSessionRepository;
+import com.wvw.mmw.global.exception.BusinessException;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,11 +39,11 @@ public class InterviewDetailService {
 
 //      interviewSession(sessionId, companyName, jobPosition, careerLevel, durationMinutes)
         InterviewSession session = interviewSessionRepository.findById(sessionId)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 면접 session ID : "+sessionId));
+                .orElseThrow(()-> new BusinessException(ErrorCode.INTERVIEW_SESSION_NOT_FOUND));
 
 //      overallFeedback
         OverallFeedback overallFeedback =overallFeedbackRepository.findByInterviewSessionId(sessionId)
-                .orElseThrow(()->new IllegalArgumentException("종합 피드백이 생성되지 않음"));
+                .orElseThrow(()->new BusinessException(ErrorCode.OVERALL_FEEDBACK_NOT_FOUND));
 
 //      feedbackPoint
         List<FeedbackPoint> feedbackPointList = feedbackPointRepository.findAllByOverallFeedbackIdOrderBySequenceAsc(overallFeedback.getId());

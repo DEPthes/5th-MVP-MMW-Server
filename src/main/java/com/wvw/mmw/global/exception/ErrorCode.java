@@ -27,6 +27,16 @@ public enum ErrorCode {
     // interview
 
     // feedback
+    INTERVIEW_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 면접 세션"),
+    INTERVIEW_QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 면접 질문"),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 질문에 대한 답변 존재하지 않음"),
+    OVERALL_FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND, "생성되지 않은 종합피드백"),
+    FEEDBACK_ALREADY_EXIST(HttpStatus.CONFLICT,"이지 존재하는 피드백"),
+    AI_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AI 서버 통신 실패"),
+    AI_OVERALL_FEEDBACK_PARSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI 종합 피드백 파싱 중 오류 발생")
+
+
+
     ;
 
     private final HttpStatus status;
