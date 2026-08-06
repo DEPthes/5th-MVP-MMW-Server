@@ -98,4 +98,27 @@ public class InterviewSession extends BaseTimeEntity {
         this.durationMinutes = durationMinutes;
         this.status = status;
     }
+
+    // 면접 시작. 시작 시각을 기록하고 진행 중 상태로 전환.
+    public void start() {
+        this.startedAt = LocalDateTime.now();
+        this.status = SessionStatus.IN_PROGRESS;
+    }
+
+    // 면접 종료. 종료 시각을 기록하고 분석 대기 상태로 전환.
+    public void endInterview() {
+        this.endedAt = LocalDateTime.now();
+        this.status = SessionStatus.ANALYZING;
+    }
+
+    // 피드백 생성 완료 기록.
+    public void completeAnalysis() {
+        this.status = SessionStatus.COMPLETED;
+    }
+
+    // 분석에 실패했음을 사유와 함께 기록.
+    public void failAnalysis(String reason) {
+        this.status = SessionStatus.FAILED;
+        this.failureReason = reason;
+    }
 }
