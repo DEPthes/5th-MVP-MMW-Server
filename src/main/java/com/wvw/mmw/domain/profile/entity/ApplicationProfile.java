@@ -60,4 +60,10 @@ public class ApplicationProfile extends BaseTimeEntity {
         this.jobPosition = jobPosition;
         this.careerLevel = careerLevel;
     }
+
+    public void update(String companyName, String jobPosition, CareerLevel careerLevel) {
+        this.companyName = companyName;
+        this.jobPosition = jobPosition;
+        this.careerLevel = careerLevel;
+    }
 }
