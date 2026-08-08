@@ -54,6 +54,8 @@ public class QuestionAudioService {
                 .findByIdAndInterviewSessionId(questionId, sessionId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.QUESTION_NOT_FOUND));
 
+        question.markAsked();
+
         String objectName = (question.getTtsObjectPath() != null)
                 ? question.getTtsObjectPath()
                 : createAudio(question);

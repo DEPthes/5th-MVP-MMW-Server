@@ -29,6 +29,7 @@ public enum ErrorCode {
     QUESTION_GENERATION_FAILED(HttpStatus.BAD_GATEWAY, "면접 질문 생성에 실패했습니다."),
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "면접 질문을 찾을 수 없습니다."),
     TTS_GENERATION_FAILED(HttpStatus.BAD_GATEWAY, "질문 음성 생성에 실패했습니다."),
+    ANSWER_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "이미 답변이 제출된 질문입니다."),
 
     // feedback
     ;
