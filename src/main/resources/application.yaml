@@ -2,14 +2,10 @@ spring:
   application:
     name: mmw
 
-  docker:
-    compose:
-      enabled: ${DOCKER_COMPOSE_ENABLED:false}
-
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mmw}
+    username: ${DB_USERNAME:mmw}
+    password: ${DB_PASSWORD:mmw}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -28,9 +24,3 @@ gemini:
   api-key: ${GEMINI_API_KEY}
   model: gemini-flash-latest
   base-url: https://generativelanguage.googleapis.com
-
-jwt:
-  issuer: mmw
-  secret: ${JWT_SECRET}
-  access-token-expiration-ms: ${JWT_ACCESS_TOKEN_EXPIRATION_MS:1800000}
-  refresh-token-expiration-ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS:1209600000}
