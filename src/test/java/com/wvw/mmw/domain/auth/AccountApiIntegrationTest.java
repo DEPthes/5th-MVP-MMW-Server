@@ -1,6 +1,7 @@
 package com.wvw.mmw.domain.auth;
 
 import com.jayway.jsonpath.JsonPath;
+import com.wvw.mmw.ExternalCloudClientTestSupport;
 import com.wvw.mmw.domain.auth.dto.request.LoginRequest;
 import com.wvw.mmw.domain.auth.dto.request.SignupRequest;
 import com.wvw.mmw.domain.auth.dto.response.TokenResponse;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class AccountApiIntegrationTest {
+class AccountApiIntegrationTest extends ExternalCloudClientTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

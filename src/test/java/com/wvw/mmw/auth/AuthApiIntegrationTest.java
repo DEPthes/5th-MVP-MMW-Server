@@ -1,5 +1,6 @@
 package com.wvw.mmw.auth;
 
+import com.wvw.mmw.ExternalCloudClientTestSupport;
 import com.wvw.mmw.domain.auth.dto.request.SignupRequest;
 import com.wvw.mmw.domain.auth.jwt.JwtProvider;
 import com.wvw.mmw.domain.auth.repository.RefreshTokenRepository;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class AuthApiIntegrationTest {
+class AuthApiIntegrationTest extends ExternalCloudClientTestSupport {
 
     private static final String TEST_JWT_SECRET =
             "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=";

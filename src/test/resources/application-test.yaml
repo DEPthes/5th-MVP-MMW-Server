@@ -21,6 +21,19 @@ logging:
 gemini:
   api-key: test-only
 
+gcs:
+  bucket-name: test-bucket
+
+stt:
+  language-code: ko-KR
+  model: latest_long
+  sample-rate-hertz: 16000
+
+tts:
+  language-code: ko-KR
+  voice-gender: NEUTRAL
+  speaking-rate: 1.0
+
 jwt:
   issuer: mmw-test
   secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
