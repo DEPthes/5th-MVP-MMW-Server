@@ -19,8 +19,14 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_users_login_id", columnNames = "login_id"),
-                @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+                @UniqueConstraint(
+                        name = "uk_users_login_id",
+                        columnNames = "login_id"
+                ),
+                @UniqueConstraint(
+                        name = "uk_users_email",
+                        columnNames = "email"
+                )
         }
 )
 public class User extends BaseTimeEntity {
@@ -29,16 +35,32 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "login_id", nullable = false, length = 50, updatable = false)
+    @Column(
+            name = "login_id",
+            nullable = false,
+            length = 50,
+            updatable = false
+    )
     private String loginId;
 
-    @Column(nullable = false, updatable = false)
+    @Column(
+            nullable = false,
+            length = 255,
+            updatable = false
+    )
     private String email;
 
-    @Column(nullable = false)
+    @Column(
+            nullable = false,
+            length = 255
+    )
     private String password;
 
-    @Column(nullable = false, length = 50, updatable = false)
+    @Column(
+            nullable = false,
+            length = 50,
+            updatable = false
+    )
     private String name;
 
     @Column(length = 50)
@@ -48,10 +70,41 @@ public class User extends BaseTimeEntity {
     private String desiredPosition;
 
     @Builder
-    private User(String loginId, String email, String password, String name) {
+    private User(
+            String loginId,
+            String email,
+            String password,
+            String name
+    ) {
         this.loginId = loginId;
         this.email = email;
         this.password = password;
         this.name = name;
+    }
+
+    public static User create(
+            String loginId,
+            String email,
+            String password,
+            String name
+    ) {
+        return new User(loginId, email, password, name);
+    }
+
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateProfile(
+            String nickname,
+            String desiredPosition
+    ) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+
+        if (desiredPosition != null) {
+            this.desiredPosition = desiredPosition;
+        }
     }
 }

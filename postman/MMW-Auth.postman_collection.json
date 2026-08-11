@@ -1,0 +1,442 @@
+{
+  "info": {
+    "_postman_id": "4376fc27-8a50-477b-a587-d4d194097e80",
+    "name": "MMW 인증·회원 API",
+    "description": "회원가입, 로그인, JWT 인증 내 정보 조회 테스트",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "loginId",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": "Password1!"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. 회원가입 성공",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const suffix = Date.now().toString().slice(-8);",
+              "pm.collectionVariables.set('email', `member${suffix}@example.com`);",
+              "pm.collectionVariables.set('loginId', `user${suffix}`);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('응답 본문 없음', () => pm.expect(pm.response.text()).to.eql(''));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loginId\": \"{{loginId}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"passwordConfirm\": \"{{password}}\",\n  \"name\": \"홍길동\",\n  \"privacyAgreed\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/signup",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "2. 로그인 성공",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('토큰 발급', () => {",
+              "  pm.expect(body.success).to.eql(true);",
+              "  pm.expect(body.data.accessToken).to.be.a('string').and.not.empty;",
+              "  pm.expect(body.data.refreshToken).to.be.a('string').and.not.empty;",
+              "});",
+              "pm.collectionVariables.set('accessToken', body.data.accessToken);",
+              "pm.collectionVariables.set('refreshToken', body.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loginId\": \"{{loginId}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "3. 내 정보 조회 성공",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('로그인 사용자 조회', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.success).to.eql(true);",
+              "  pm.expect(body.data.loginId).to.eql(pm.collectionVariables.get('loginId'));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "users", "me"]
+        }
+      }
+    },
+    {
+      "name": "4. 토큰 없는 내 정보 조회 실패",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('인증 실패 코드', () => pm.expect(pm.response.json().code).to.eql('INVALID_TOKEN'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "users", "me"]
+        }
+      }
+    },
+    {
+      "name": "5. 잘못된 URL",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('리소스 없음 코드', () => pm.expect(pm.response.json().code).to.eql('RESOURCE_NOT_FOUND'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/not-found",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "not-found"]
+        }
+      }
+    },
+    {
+      "name": "6. 토큰 재발급",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('토큰 rotation', () => {",
+              "  pm.expect(body.data.accessToken).to.be.a('string').and.not.empty;",
+              "  pm.expect(body.data.refreshToken).to.be.a('string').and.not.empty;",
+              "  pm.expect(body.data.refreshToken).not.to.eql(pm.collectionVariables.get('refreshToken'));",
+              "});",
+              "pm.collectionVariables.set('accessToken', body.data.accessToken);",
+              "pm.collectionVariables.set('refreshToken', body.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/reissue",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "reissue"]
+        }
+      }
+    },
+    {
+      "name": "7. 로그인 세션 확인",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('인증 상태', () => pm.expect(pm.response.json().data.authenticated).to.eql(true));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/session",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "session"]
+        }
+      }
+    },
+    {
+      "name": "8. 프로필 수정",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('프로필 반영', () => {",
+              "  const data = pm.response.json().data;",
+              "  pm.expect(data.nickname).to.eql('면접왕');",
+              "  pm.expect(data.desiredPosition).to.eql('백엔드 개발자');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nickname\": \"면접왕\",\n  \"desiredPosition\": \"백엔드 개발자\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "users", "me"]
+        }
+      }
+    },
+    {
+      "name": "9. 비밀번호 변경",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.collectionVariables.set('password', 'NewPassword2!');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"{{password}}\",\n  \"newPassword\": \"NewPassword2!\",\n  \"newPasswordConfirm\": \"NewPassword2!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/password",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "password"]
+        }
+      }
+    },
+    {
+      "name": "10. 로그아웃",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "logout"]
+        }
+      }
+    },
+    {
+      "name": "11. 변경된 비밀번호로 로그인",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('accessToken', body.data.accessToken);",
+              "pm.collectionVariables.set('refreshToken', body.data.refreshToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loginId\": \"{{loginId}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "12. 회원 탈퇴",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+              "pm.collectionVariables.unset('accessToken');",
+              "pm.collectionVariables.unset('refreshToken');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "users", "me"]
+        }
+      }
+    }
+  ]
+}
