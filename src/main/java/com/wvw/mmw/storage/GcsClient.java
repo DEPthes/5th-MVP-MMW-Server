@@ -37,7 +37,7 @@ public class GcsClient {
 
         storage.create(blobInfo, content);
 
-        return "gs://" + bucketName + "/" + objectName; //STT가 요구하는 형식:gs://
+        return toGcsUri(objectName);
     }
 
     /**
@@ -61,6 +61,11 @@ public class GcsClient {
      */
     public boolean delete(String objectName) {
         return storage.delete(BlobId.of(bucketName, objectName));
+    }
+
+    // 버킷 내 경로를 STT가 요구하는 gs:// URI로 만든다.
+    public String toGcsUri(String objectName) {
+        return "gs://" + bucketName + "/" + objectName;
     }
 
     // gs://버킷/경로 형태의 URI에서 경로 부분만 꺼낸다.
