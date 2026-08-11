@@ -1,4 +1,4 @@
-package com.wvw.mmw.domain.gemini.dto;
+package com.wvw.mmw.gemini.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

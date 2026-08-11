@@ -1,4 +1,4 @@
-package com.wvw.mmw.domain.gemini.dto;
+package com.wvw.mmw.gemini.dto;
 
 import java.util.List;
 

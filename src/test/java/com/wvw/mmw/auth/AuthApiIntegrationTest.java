@@ -19,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -98,12 +99,11 @@ class AuthApiIntegrationTest {
                                 "onlyletters",
                                 "onlyletters",
                                 true
-                        )))
+                )))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value("INVALID_INPUT_VALUE"))
-                .andExpect(jsonPath("$.data.loginId").exists())
-                .andExpect(jsonPath("$.data.password").exists());
+                .andExpect(jsonPath("$.errors[*].field")
+                        .value(hasItems("loginId", "password")));
     }
 
     @Test
@@ -131,10 +131,11 @@ class AuthApiIntegrationTest {
                                 "Password1!",
                                 "Password1!",
                                 false
-                        )))
+                )))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_INPUT_VALUE"))
-                .andExpect(jsonPath("$.data.privacyAgreed").exists());
+                .andExpect(jsonPath("$.errors[0].field")
+                        .value("privacyAgreed"));
     }
 
     @Test

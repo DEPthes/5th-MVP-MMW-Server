@@ -6,6 +6,8 @@ import com.wvw.mmw.domain.auth.dto.request.SignupRequest;
 import com.wvw.mmw.domain.auth.dto.request.TokenReissueRequest;
 import com.wvw.mmw.domain.auth.dto.response.TokenResponse;
 import com.wvw.mmw.domain.auth.entity.RefreshToken;
+import com.wvw.mmw.domain.auth.error.AuthErrorCode;
+import com.wvw.mmw.domain.auth.error.AuthException;
 import com.wvw.mmw.domain.auth.jwt.JwtProvider;
 import com.wvw.mmw.domain.auth.jwt.TokenHashUtil;
 import com.wvw.mmw.domain.auth.repository.RefreshTokenRepository;
@@ -89,8 +91,8 @@ public class AuthService {
         User user = userRepository
                 .findByLoginId(request.loginId())
                 .orElseThrow(() ->
-                        new BusinessException(
-                                ErrorCode.INVALID_CREDENTIALS
+                        new AuthException(
+                                AuthErrorCode.INVALID_CREDENTIALS
                         )
                 );
 
@@ -100,8 +102,8 @@ public class AuthService {
         );
 
         if (!passwordMatches) {
-            throw new BusinessException(
-                    ErrorCode.INVALID_CREDENTIALS
+            throw new AuthException(
+                    AuthErrorCode.INVALID_CREDENTIALS
             );
         }
 
@@ -127,7 +129,7 @@ public class AuthService {
     /**
      * Refresh Token을 검증하고 Access/Refresh Token을 모두 교체한다.
      */
-    @Transactional(noRollbackFor = BusinessException.class)
+    @Transactional(noRollbackFor = AuthException.class)
     public TokenResponse reissue(TokenReissueRequest request) {
         String rawRefreshToken = request.refreshToken();
         String tokenHash = TokenHashUtil.sha256(rawRefreshToken);
@@ -198,8 +200,8 @@ public class AuthService {
                 request.currentPassword(),
                 user.getPassword()
         )) {
-            throw new BusinessException(
-                    ErrorCode.INVALID_CURRENT_PASSWORD
+            throw new AuthException(
+                    AuthErrorCode.INVALID_CURRENT_PASSWORD
             );
         }
 
@@ -207,15 +209,15 @@ public class AuthService {
                 request.newPassword(),
                 request.newPasswordConfirm()
         )) {
-            throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
+            throw new AuthException(AuthErrorCode.PASSWORD_MISMATCH);
         }
 
         if (passwordEncoder.matches(
                 request.newPassword(),
                 user.getPassword()
         )) {
-            throw new BusinessException(
-                    ErrorCode.SAME_AS_CURRENT_PASSWORD
+            throw new AuthException(
+                    AuthErrorCode.SAME_AS_CURRENT_PASSWORD
             );
         }
 
@@ -233,8 +235,8 @@ public class AuthService {
             String normalizedEmail
     ) {
         if (!Boolean.TRUE.equals(request.privacyAgreed())) {
-            throw new BusinessException(
-                    ErrorCode.PRIVACY_CONSENT_REQUIRED
+            throw new AuthException(
+                    AuthErrorCode.PRIVACY_CONSENT_REQUIRED
             );
         }
 
@@ -242,20 +244,20 @@ public class AuthService {
                 request.password(),
                 request.passwordConfirm()
         )) {
-            throw new BusinessException(
-                    ErrorCode.PASSWORD_MISMATCH
+            throw new AuthException(
+                    AuthErrorCode.PASSWORD_MISMATCH
             );
         }
 
         if (userRepository.existsByLoginId(request.loginId())) {
-            throw new BusinessException(
-                    ErrorCode.LOGIN_ID_ALREADY_EXISTS
+            throw new AuthException(
+                    AuthErrorCode.LOGIN_ID_ALREADY_EXISTS
             );
         }
 
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new BusinessException(
-                    ErrorCode.EMAIL_ALREADY_EXISTS
+            throw new AuthException(
+                    AuthErrorCode.EMAIL_ALREADY_EXISTS
             );
         }
     }
@@ -302,12 +304,12 @@ public class AuthService {
     private User getAuthenticatedUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new BusinessException(ErrorCode.INVALID_TOKEN)
+                        new AuthException(AuthErrorCode.INVALID_TOKEN)
                 );
     }
 
-    private BusinessException invalidRefreshToken() {
-        return new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+    private AuthException invalidRefreshToken() {
+        return new AuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
     }
 
     private void validateBcryptLength(String password) {
