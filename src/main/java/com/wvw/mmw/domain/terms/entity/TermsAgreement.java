@@ -1,5 +1,6 @@
-package com.wvw.mmw.domain.user.entity;
+package com.wvw.mmw.domain.terms.entity;
 
+import com.wvw.mmw.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -55,5 +56,9 @@ public class TermsAgreement {
         this.user = user;
         this.termsType = termsType;
         this.agreedAt = agreedAt;
+    }
+
+    public static TermsAgreement create(User user, TermsType termsType, LocalDateTime agreedAt) {
+        return new TermsAgreement(user, termsType, agreedAt);
     }
 }
