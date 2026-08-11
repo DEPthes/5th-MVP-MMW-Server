@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/api/v1/users/me"
+method: GET
+headers:
+  Authorization: Bearer {{accessToken}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('HTTP 200', () => pm.response.to.have.status(200));
+      pm.test('로그인 사용자 조회', () => {
+        const body = pm.response.json();
+        pm.expect(body.success).to.eql(true);
+        pm.expect(body.data.loginId).to.eql(pm.collectionVariables.get('loginId'));
+      });
+    language: text/javascript
+order: 3000

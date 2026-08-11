@@ -1,7 +1,7 @@
-package com.wvw.mmw.gemini;
+package com.wvw.mmw.domain.gemini;
 
-import com.wvw.mmw.gemini.dto.GeminiRequest;
-import com.wvw.mmw.gemini.dto.GeminiResponse;
+import com.wvw.mmw.domain.gemini.dto.GeminiRequest;
+import com.wvw.mmw.domain.gemini.dto.GeminiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
