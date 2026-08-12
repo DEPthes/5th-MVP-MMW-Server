@@ -2,9 +2,11 @@ package com.wvw.mmw;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class MmwApplicationTests {
+@ActiveProfiles("test")
+class MmwApplicationTests extends ExternalCloudClientTestSupport {
 
 	@Test
 	void contextLoads() {

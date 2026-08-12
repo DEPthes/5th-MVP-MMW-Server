@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> toResponse(ErrorCode errorCode,
-                                                    List<ErrorResponse.FieldError> errors) {
+                                                     List<ErrorResponse.FieldError> errors) {
         return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.of(errorCode, errors));
     }
 }
