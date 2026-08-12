@@ -1,6 +1,6 @@
 package com.wvw.mmw.global.security;
 
-import com.wvw.mmw.domain.auth.error.AuthErrorCode;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +13,7 @@ final class SecurityErrorResponseWriter {
 
     static void write(
             HttpServletResponse response,
-            AuthErrorCode errorCode
+            ErrorCode errorCode
     ) throws IOException {
         response.setStatus(errorCode.getStatus().value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

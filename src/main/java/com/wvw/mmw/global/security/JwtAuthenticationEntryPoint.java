@@ -1,6 +1,6 @@
 package com.wvw.mmw.global.security;
 
-import com.wvw.mmw.domain.auth.error.AuthErrorCode;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     ) throws IOException, ServletException {
         SecurityErrorResponseWriter.write(
                 response,
-                AuthErrorCode.INVALID_TOKEN
+                ErrorCode.INVALID_TOKEN
         );
     }
 }
