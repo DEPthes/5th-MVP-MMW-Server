@@ -16,4 +16,7 @@ public interface InterviewQuestionRepository extends JpaRepository<InterviewQues
 
     // 출제된 질문 수. 최소 질문 수 도달 여부 판단에 사용.
     long countByInterviewSessionIdAndAskedAtIsNotNull(Long sessionId);
+
+    // 질문이 해당 세션에 속하는지 함께 검증하며 조회.
+    Optional<InterviewQuestion> findByIdAndInterviewSessionId(Long id, Long sessionId);
 }

@@ -36,3 +36,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### GCP 서비스 계정 키 ###
+*.json
+!src/main/resources/**/*.json
+gcp-key.json

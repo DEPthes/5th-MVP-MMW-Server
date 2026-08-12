@@ -58,9 +58,11 @@ public class InterviewQuestion extends BaseCreatedAtEntity {
         this.sequence = sequence;
     }
 
-    // 사용자에게 출제된 시각을 기록. 기능명세 13번: 미출제 질문이 있으면 다음 질문 부분
+    // 사용자에게 출제된 시각을 기록. 이미 기록되어 있으면 유지함.
     public void markAsked() {
-        this.askedAt = LocalDateTime.now();
+        if (this.askedAt == null) {
+            this.askedAt = LocalDateTime.now();
+        }
     }
 
     // 생성된 TTS 음성 파일의 경로를 기록. IA 9번: 질문 다시 듣기 부분(새로 호출이 아닌 경로 저장 후 재사용)
