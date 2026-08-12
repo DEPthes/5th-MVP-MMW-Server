@@ -17,4 +17,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     // 세션의 모든 답변을 질문 순서대로 조회한다. 피드백 프롬프트 구성에 사용한다.
     List<Answer> findByInterviewQuestionInterviewSessionIdOrderByInterviewQuestionSequenceAsc(Long sessionId);
+
+    // 해당 질문에 이미 답변이 있는지 확인한다.
+    boolean existsByInterviewQuestionId(Long questionId);
 }
