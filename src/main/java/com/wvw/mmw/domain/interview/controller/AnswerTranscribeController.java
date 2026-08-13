@@ -2,7 +2,6 @@ package com.wvw.mmw.domain.interview.controller;
 
 import com.wvw.mmw.domain.interview.dto.TranscribeResponse;
 import com.wvw.mmw.domain.interview.service.AnswerTranscribeService;
-import com.wvw.mmw.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,12 +28,10 @@ public class AnswerTranscribeController {
      * @param sessionId 면접 세션 ID
      */
     @PostMapping("/transcribe")
-    public ResponseEntity<ApiResponse<TranscribeResponse>> transcribe(
+    public ResponseEntity<TranscribeResponse> transcribe(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long sessionId) {
 
-        TranscribeResponse response = answerTranscribeService.transcribeAll(userId, sessionId);
-
-        return ResponseEntity.ok(ApiResponse.success("답변 음성 변환을 완료했습니다.", response));
+        return ResponseEntity.ok(answerTranscribeService.transcribeAll(userId, sessionId));
     }
 }
