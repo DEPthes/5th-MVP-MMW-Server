@@ -1,7 +1,5 @@
 package com.wvw.mmw.domain.user.service;
 
-import com.wvw.mmw.domain.auth.error.AuthErrorCode;
-import com.wvw.mmw.domain.auth.error.AuthException;
 import com.wvw.mmw.domain.user.dto.request.UpdateProfileRequest;
 import com.wvw.mmw.domain.user.dto.response.UserProfileResponse;
 import com.wvw.mmw.domain.user.entity.User;
@@ -50,7 +48,7 @@ public class UserService {
     private User getAuthenticatedUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new AuthException(AuthErrorCode.INVALID_TOKEN)
+                        new BusinessException(ErrorCode.INVALID_TOKEN)
                 );
     }
 

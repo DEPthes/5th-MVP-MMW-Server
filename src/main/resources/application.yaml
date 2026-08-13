@@ -30,6 +30,13 @@ gemini:
   model: gemini-flash-latest
   base-url: https://generativelanguage.googleapis.com
 
+jwt:
+  issuer: mmw
+  secret: ${JWT_SECRET}
+  access-token-expiration-ms: 1800000
+  refresh-token-expiration-ms: 1209600000
+
+
 stt:
   language-code: ko-KR
   model: latest_long

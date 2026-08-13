@@ -1,6 +1,6 @@
 package com.wvw.mmw.global.security;
 
-import com.wvw.mmw.domain.auth.error.AuthErrorCode;
+import com.wvw.mmw.global.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     ) throws IOException, ServletException {
         SecurityErrorResponseWriter.write(
                 response,
-                AuthErrorCode.ACCESS_DENIED
+                ErrorCode.ACCESS_DENIED
         );
     }
 }
