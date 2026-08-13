@@ -2,7 +2,6 @@ package com.wvw.mmw.domain.interview.controller;
 
 import com.wvw.mmw.domain.interview.dto.AnswerSubmitResponse;
 import com.wvw.mmw.domain.interview.service.AnswerService;
-import com.wvw.mmw.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,15 +32,12 @@ public class AnswerController {
      * @param audioFile  답변 음성 파일 (LINEAR16 / 16000Hz / 모노, 최대 10MB)
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<AnswerSubmitResponse>> submit(
+    public ResponseEntity<AnswerSubmitResponse> submit(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long sessionId,
             @RequestParam Long questionId,
             @RequestPart MultipartFile audioFile) {
 
-        AnswerSubmitResponse response =
-                answerService.submit(userId, sessionId, questionId, audioFile);
-
-        return ResponseEntity.ok(ApiResponse.success("답변이 제출되었습니다.", response));
+        return ResponseEntity.ok(answerService.submit(userId, sessionId, questionId, audioFile));
     }
 }

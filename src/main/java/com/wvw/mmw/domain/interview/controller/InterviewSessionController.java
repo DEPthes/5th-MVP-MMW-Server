@@ -5,7 +5,6 @@ import com.wvw.mmw.domain.interview.dto.InterviewSessionStartResponse;
 import com.wvw.mmw.domain.interview.dto.InterviewSessionSummaryResponse;
 import com.wvw.mmw.domain.interview.entity.SessionStatus;
 import com.wvw.mmw.domain.interview.service.InterviewSessionService;
-import com.wvw.mmw.global.response.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,14 +36,12 @@ public class InterviewSessionController {
      * @param request 면접 조건
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<InterviewSessionStartResponse>> create(
+    public ResponseEntity<InterviewSessionStartResponse> create(
             @AuthenticationPrincipal Long userId,
             @RequestBody CreateInterviewSessionRequest request) {
 
         InterviewSessionStartResponse response = interviewSessionService.create(userId, request);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("면접 세션이 생성되었습니다.", response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -54,14 +51,11 @@ public class InterviewSessionController {
      * @param status 조회 필터. ALL이면 전체, COMPLETED면 완료된 기록만.
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<InterviewSessionSummaryResponse>>> list(
+    public ResponseEntity<List<InterviewSessionSummaryResponse>> list(
             @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "ALL") StatusFilter status) {
 
-        List<InterviewSessionSummaryResponse> response =
-                interviewSessionService.findAll(userId, status.toSessionStatus());
-
-        return ResponseEntity.ok(ApiResponse.success("면접 기록을 조회했습니다.", response));
+        return ResponseEntity.ok(interviewSessionService.findAll(userId, status.toSessionStatus()));
     }
 
     /**

@@ -2,7 +2,6 @@ package com.wvw.mmw.domain.interview.controller;
 
 import com.wvw.mmw.domain.interview.dto.QuestionAudioResponse;
 import com.wvw.mmw.domain.interview.service.QuestionAudioService;
-import com.wvw.mmw.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,14 +28,11 @@ public class QuestionAudioController {
      * @param questionId 질문 ID
      */
     @GetMapping("/audio")
-    public ResponseEntity<ApiResponse<QuestionAudioResponse>> getAudio(
+    public ResponseEntity<QuestionAudioResponse> getAudio(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long sessionId,
             @PathVariable Long questionId) {
 
-        QuestionAudioResponse response =
-                questionAudioService.getAudio(userId, sessionId, questionId);
-
-        return ResponseEntity.ok(ApiResponse.success("질문 음성을 조회했습니다.", response));
+        return ResponseEntity.ok(questionAudioService.getAudio(userId, sessionId, questionId));
     }
 }
