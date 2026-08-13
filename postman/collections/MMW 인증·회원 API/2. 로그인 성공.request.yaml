@@ -16,11 +16,10 @@ scripts:
       pm.test('HTTP 200', () => pm.response.to.have.status(200));
       const body = pm.response.json();
       pm.test('토큰 발급', () => {
-        pm.expect(body.success).to.eql(true);
-        pm.expect(body.data.accessToken).to.be.a('string').and.not.empty;
-        pm.expect(body.data.refreshToken).to.be.a('string').and.not.empty;
+        pm.expect(body.accessToken).to.be.a('string').and.not.empty;
+        pm.expect(body.refreshToken).to.be.a('string').and.not.empty;
       });
-      pm.collectionVariables.set('accessToken', body.data.accessToken);
-      pm.collectionVariables.set('refreshToken', body.data.refreshToken);
+      pm.collectionVariables.set('accessToken', body.accessToken);
+      pm.collectionVariables.set('refreshToken', body.refreshToken);
     language: text/javascript
 order: 2000

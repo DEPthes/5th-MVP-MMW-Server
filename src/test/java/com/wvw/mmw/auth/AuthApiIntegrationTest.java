@@ -176,9 +176,8 @@ class AuthApiIntegrationTest extends ExternalCloudClientTestSupport {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson("member01", "Password1!")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
 
         User user = userRepository.findByLoginId("member01").orElseThrow();
         assertThat(refreshTokenRepository.findByUser(user)).isPresent();

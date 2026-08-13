@@ -71,14 +71,14 @@ class AccountApiIntegrationTest extends ExternalCloudClientTestSupport {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(reissueJson(loginTokens.refreshToken())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
                 .andReturn();
 
         String body = result.getResponse().getContentAsString();
         String newRefreshToken = JsonPath.read(
                 body,
-                "$.data.refreshToken"
+                "$.refreshToken"
         );
 
         assertThat(newRefreshToken)
@@ -139,8 +139,8 @@ class AccountApiIntegrationTest extends ExternalCloudClientTestSupport {
                                 bearer(tokens.accessToken())
                         ))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.authenticated").value(true))
-                .andExpect(jsonPath("$.data.userId").value(user.getId()));
+                .andExpect(jsonPath("$.authenticated").value(true))
+                .andExpect(jsonPath("$.userId").value(user.getId()));
 
         mockMvc.perform(get("/api/v1/auth/session"))
                 .andExpect(status().isUnauthorized())

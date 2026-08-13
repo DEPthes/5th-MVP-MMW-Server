@@ -15,7 +15,7 @@ scripts:
     code: |-
       pm.test('HTTP 200', () => pm.response.to.have.status(200));
       const body = pm.response.json();
-      pm.collectionVariables.set('accessToken', body.data.accessToken);
-      pm.collectionVariables.set('refreshToken', body.data.refreshToken);
+      pm.collectionVariables.set('accessToken', body.accessToken);
+      pm.collectionVariables.set('refreshToken', body.refreshToken);
     language: text/javascript
 order: 11000
