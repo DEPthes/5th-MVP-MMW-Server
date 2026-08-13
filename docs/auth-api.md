@@ -17,20 +17,11 @@ $env:GEMINI_API_KEY = "Gemini API 키"
 
 JWT 비밀키는 Base64 문자열이어야 하며, 운영 비밀값은 저장소에 커밋하지 않는다.
 
-## 공통 응답
+## 응답 형식
 
-본문이 있는 성공 응답과 모든 오류 응답은 다음 공통 형식을 사용한다.
-
-```json
-{
-  "success": true,
-  "code": "SUCCESS",
-  "message": "요청을 처리했습니다.",
-  "data": {}
-}
-```
-
-회원가입 성공과 같이 명세가 빈 본문을 지정한 경우에는 공통 응답을 사용하지 않는다.
+인증 API의 본문이 있는 성공 응답은 공통 Wrapper 없이 Response DTO를 직접 반환한다.
+회원가입 성공과 같이 명세가 빈 본문을 지정한 경우에는 응답 본문을 반환하지 않는다.
+오류 응답은 `code`, `message`와 필요한 경우 필드별 `errors`를 반환한다.
 
 ## 회원가입
 
@@ -68,13 +59,8 @@ JWT 비밀키는 Base64 문자열이어야 하며, 운영 비밀값은 저장소
 
 ```json
 {
-  "success": true,
-  "code": "SUCCESS",
-  "message": "로그인에 성공했습니다.",
-  "data": {
-    "accessToken": "...",
-    "refreshToken": "..."
-  }
+  "accessToken": "...",
+  "refreshToken": "..."
 }
 ```
 
@@ -129,7 +115,7 @@ Authorization: Bearer {accessToken}
 
 `GET /api/v1/auth/session`
 
-유효한 Access Token이 필요하다. 성공 응답의 `data`는 다음과 같다.
+유효한 Access Token이 필요하다. 성공 응답은 다음과 같다.
 
 ```json
 {

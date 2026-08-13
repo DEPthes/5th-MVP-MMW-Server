@@ -7,7 +7,6 @@ import com.wvw.mmw.domain.auth.dto.request.TokenReissueRequest;
 import com.wvw.mmw.domain.auth.dto.response.SessionResponse;
 import com.wvw.mmw.domain.auth.dto.response.TokenResponse;
 import com.wvw.mmw.domain.auth.service.AuthService;
-import com.wvw.mmw.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,43 +46,28 @@ public class AuthController {
      * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> login(
+    public ResponseEntity<TokenResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
         TokenResponse response = authService.login(request);
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "로그인에 성공했습니다.",
-                        response
-                )
-        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<TokenResponse>> reissue(
+    public ResponseEntity<TokenResponse> reissue(
             @Valid @RequestBody TokenReissueRequest request
     ) {
         TokenResponse response = authService.reissue(request);
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "토큰을 재발급했습니다.",
-                        response
-                )
-        );
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/session")
-    public ResponseEntity<ApiResponse<SessionResponse>> getSession(
+    public ResponseEntity<SessionResponse> getSession(
             @AuthenticationPrincipal Long userId
     ) {
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "유효한 로그인 세션입니다.",
-                        SessionResponse.authenticated(userId)
-                )
-        );
+        return ResponseEntity.ok(SessionResponse.authenticated(userId));
     }
 
     @PostMapping("/logout")
