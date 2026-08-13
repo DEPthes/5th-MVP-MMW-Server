@@ -5,16 +5,17 @@ import com.wvw.mmw.domain.interview.dto.InterviewSessionStartResponse;
 import com.wvw.mmw.domain.interview.dto.InterviewSessionSummaryResponse;
 import com.wvw.mmw.domain.interview.entity.SessionStatus;
 import com.wvw.mmw.domain.interview.service.InterviewSessionService;
+import com.wvw.mmw.global.response.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 면접 세션 관련 엔드포인트.
  */
 @RestController
-@RequestMapping("/interviews")
+@RequestMapping("/api/v1/interviews")
 @RequiredArgsConstructor
 public class InterviewSessionController {
 
@@ -32,16 +33,18 @@ public class InterviewSessionController {
     /**
      * 면접 세션을 생성하고 질문 세트를 발급.
      *
-     * @param userId  로그인 사용자 ID. TODO: JWT 인증 도입 후 인증 정보에서 추출하도록 교체
+     * @param userId  로그인 사용자 ID
      * @param request 면접 조건
      */
     @PostMapping
-    public ResponseEntity<InterviewSessionStartResponse> create(
-            @RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ApiResponse<InterviewSessionStartResponse>> create(
+            @AuthenticationPrincipal Long userId,
             @RequestBody CreateInterviewSessionRequest request) {
 
         InterviewSessionStartResponse response = interviewSessionService.create(userId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("면접 세션이 생성되었습니다.", response));
     }
 
     /**
@@ -51,22 +54,25 @@ public class InterviewSessionController {
      * @param status 조회 필터. ALL이면 전체, COMPLETED면 완료된 기록만.
      */
     @GetMapping
-    public ResponseEntity<List<InterviewSessionSummaryResponse>> list(
-            @RequestHeader("X-User-Id") Long userId,
+    public ResponseEntity<ApiResponse<List<InterviewSessionSummaryResponse>>> list(
+            @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "ALL") StatusFilter status) {
 
-        return ResponseEntity.ok(interviewSessionService.findAll(userId, status.toSessionStatus()));
+        List<InterviewSessionSummaryResponse> response =
+                interviewSessionService.findAll(userId, status.toSessionStatus());
+
+        return ResponseEntity.ok(ApiResponse.success("면접 기록을 조회했습니다.", response));
     }
 
     /**
-     * 면접 기록을 삭제함.
+     * 면접 기록을 삭제.
      *
      * @param userId    로그인 사용자 ID
      * @param sessionId 삭제할 세션 ID
      */
     @DeleteMapping("/{sessionId}")
     public ResponseEntity<Void> delete(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthenticationPrincipal Long userId,
             @PathVariable Long sessionId) {
 
         interviewSessionService.delete(userId, sessionId);
