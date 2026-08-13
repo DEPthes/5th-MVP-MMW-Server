@@ -53,9 +53,3 @@ gcs:
 gcp:
   credentials-path: ${GCP_CREDENTIALS_PATH:gcp-key.json}
   project-id: mmw-project-000000
-
-jwt:
-  issuer: mmw
-  secret: ${JWT_SECRET:bW13LWxvY2FsLWRldmVsb3BtZW50LXNlY3JldC1rZXktZm9yLXRlc3Rpbmc=}
-  access-token-expiration-ms: 1800000
-  refresh-token-expiration-ms: 1209600000
