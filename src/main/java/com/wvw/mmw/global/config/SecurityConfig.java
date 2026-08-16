@@ -5,6 +5,7 @@ import com.wvw.mmw.global.security.JwtAccessDeniedHandler;
 import com.wvw.mmw.global.security.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,6 +22,9 @@ public class SecurityConfig {
             JwtAccessDeniedHandler accessDeniedHandler
     ) throws Exception {
         http
+                // WebConfig의 CorsConfigurationSource 빈을 사용. 이게 없으면 브라우저의
+                // preflight(OPTIONS) 요청도 인증 필요 규칙에 걸려 401이 난다.
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
