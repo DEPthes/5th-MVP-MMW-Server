@@ -20,7 +20,6 @@ public enum ErrorCode {
 
     // profile
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "지원 프로필을 찾을 수 없습니다."),
-    PROFILE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 지원 프로필에 접근할 수 없습니다."),
 
     // user
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다."),
